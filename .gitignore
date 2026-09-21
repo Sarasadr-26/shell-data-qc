@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Virtual environments (uv.lock IS committed; the environment folder is not)
+.venv/
+*-env/
+
+# Data: raw and derived files stay out of Git; keep only notes and tiny samples
+data/*
+!data/README.md
+!data/sample/
+
+# Secrets and local settings
+.env
+*.key
+*.pem
+
+# Outputs that can be regenerated
+reports/*.html
+
+# Editor and OS files
+.vscode/
+.DS_Store
+Thumbs.db
