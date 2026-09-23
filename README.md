@@ -1,58 +1,63 @@
-# <Project title>
+# Heart Disease Data Quality Check
 
-![tests](https://github.com/Sarasadr-26/<repo-name>/actions/workflows/ci.yml/badge.svg)
+![tests](https://github.com/Sarasadr-26/shell-data-qc/actions/workflows/ci.yml/badge.svg)
 
-**Question:** <One sentence: what question does this project answer, and for whom?>
-
-<Insert the one key figure here: `![Key result](docs/key_figure.png)`>
+**Question:** does the UCI Heart Disease dataset have any structural problems, missing values, or duplicate rows that should be fixed before it is used for analysis?
 
 ## Data
 
-- **Source:** <name, link>
-- **License:** <license, and date accessed>
-- **Contents:** <rows, columns, what one row represents>
-- Raw data is not committed. Run `bash run.sh data` to download or generate it.
+- **Source:** [UCI Machine Learning Repository, Heart Disease dataset](https://archive.ics.uci.edu/dataset/45/heart+disease)
+- **License:** CC BY 4.0
+- **Contents:** 303 patients (Cleveland site) and 294 patients (Hungarian site), 14 columns each: 13 clinical measurements plus a diagnosis
+- Raw data is not committed. Run `bash run.sh data` to download it.
 
 ## Method
 
-1. <Step one, for example: validate incoming files>
-2. <Step two, for example: define the cohort>
-3. <Step three, for example: fit and compare models with cross-validation>
+1. Download and unzip the dataset (`src/fetch_data.sh`).
+2. Check the file for missing values, wrong column counts, and duplicate rows (`src/qc_checks.sh`).
+3. Save the results as a plain-text report (`bash run.sh report`).
 
 ## Results
 
-<Two or three sentences with the main numbers and their uncertainty, for example a 95% bootstrap interval.>
+The Cleveland file (303 rows) has 6 missing values, all in the "number of major vessels" and "thalassemia result" columns, and no duplicate rows. The Hungarian file (294 rows) is far less complete: 782 missing values across 9 columns, and 1 duplicate row. This shows that the two data sources should not be treated as equally reliable before analysis.
 
 ## How to run
 
 Requires [uv](https://docs.astral.sh/uv/), Python 3.11 or newer, and Git Bash on Windows.
 
 ```bash
-git clone https://github.com/Sarasadr-26/<repo-name>.git
-cd <repo-name>
-bash run.sh setup   # creates the environment from pyproject.toml and uv.lock
-bash run.sh test    # runs the tests
-bash run.sh all     # runs the full pipeline
+git clone https://github.com/Sarasadr-26/shell-data-qc.git
+cd shell-data-qc
+bash run.sh setup    # creates the environment
+bash run.sh data     # downloads the dataset
+bash run.sh report   # runs the quality check and saves reports/qc_report.txt
+```
+
+To check a different file from the same dataset, run the script directly, for example:
+
+```bash
+bash src/qc_checks.sh data/raw/processed.switzerland.data
 ```
 
 ## Repository layout
 
 ```text
-src/         reusable code
-tests/       pytest checks
-notebooks/   exploration only, outputs cleared
-data/        data notes; raw files are never committed
-docs/        data dictionary, decisions log, figures
+src/fetch_data.sh   downloads and unzips the dataset
+src/qc_checks.sh     runs the quality checks on one file
+tests/               a smoke test confirming the environment installs correctly
+data/                data notes; raw files are never committed
+reports/             generated quality reports; not committed
 ```
 
 ## Limitations
 
-- <What the data cannot support, for example synthetic data means results demonstrate the method, not clinical truth.>
-- <Known biases, missingness, or leakage risks and how they were handled.>
+- The check looks for missing values, duplicate rows, and malformed rows. It does not check whether individual values are clinically plausible (for example, an impossible age).
+- Missing values are only detected when marked with `?`, the convention this dataset uses.
 
 ## Next steps
 
-- <One or two concrete improvements.>
+- Add a check for implausible values in specific columns (for example, age or blood pressure out of range).
+- Run the check automatically on all four hospital files, not just Cleveland and Hungarian.
 
 ## License
 
