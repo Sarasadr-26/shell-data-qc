@@ -16,7 +16,8 @@ case "$command" in
     uv run pytest
     ;;
   report)
-    echo "TODO: build figures and the written report"
+    mkdir -p reports
+    bash src/qc_checks.sh data/raw/processed.cleveland.data | tee reports/qc_report.txt
     ;;
   all)
     bash run.sh data
