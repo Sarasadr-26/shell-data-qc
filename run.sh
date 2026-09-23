@@ -10,7 +10,7 @@ case "$command" in
     uv sync
     ;;
   data)
-    echo "TODO: download or generate data into data/ (raw files are git-ignored)"
+    bash src/fetch_data.sh
     ;;
   test)
     uv run pytest
